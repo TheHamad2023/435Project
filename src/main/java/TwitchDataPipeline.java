@@ -41,6 +41,28 @@ public class TwitchDataPipeline {
             .schema(schema)
             .csv(inputFile);
 
+        // Drop any rows with missing values
         Dataset<Row> cleanData = rawData.na().drop();
+
+        // Expand time buckets by creating a sequence of time buckets, so if user has start time 1 and
+        // and stop time 3, the sequence will be [1, 2, 3]
+        Dataset<Row> expandedData = cleanData.withColumn(
+            "time_buckets",
+            sequence(col("time_start"), col("time_stop"))
+        );
+
+        // Explode the time_buckets column to create individual time buckets, so each
+        // of [1, 2, 3] would be its own row entry, as a result we will only have
+        // 4 columns as time_start and time_stop would be replaced with time_bucket
+        Dataset<Row> individualBuckets = expandedData
+            .withColumn("time_bucket", explode(col("time_buckets")))
+            .select(
+                col("user_id"),
+                col("stream_id"),
+                col("streamer_username"),
+                col("time_bucket")
+            );
+
+        // individualBuckets.show();
     }
 }
