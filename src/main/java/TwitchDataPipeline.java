@@ -64,6 +64,13 @@ public class TwitchDataPipeline {
                 col("time_bucket")
             );
 
+        Dataset<Row> resultDataset = individualBuckets.groupBy("streamer_username", "time_bucket")
+                                         .count();
+
         // individualBuckets.show();
+
+
+
+
     }
 }
