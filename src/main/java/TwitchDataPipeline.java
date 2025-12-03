@@ -20,7 +20,9 @@ public class TwitchDataPipeline {
     // 600 -> 10 minutes
     private static final long SEC_PER_TICK = 600L;
 
-    // Toggle: if true, materialize per-bucket rows from constant-count intervals.
+    // Toggle:
+    // If true -> just use simple explode on data
+    // If false -> use Line-Sweep
     private static final boolean MATERIALIZE_PER_BUCKET = true;
 
     // Row limit
@@ -33,7 +35,7 @@ public class TwitchDataPipeline {
 
     // Specifc streamer to compare Actual vs Predicted viewer count
     // Just used as an example case, does not effect the training of the model
-    private static final String PLOT_STREAMER = "ninja";
+    private static final String PLOT_STREAMER = "summit1g";
 
     public static void main(String[] args) {
         String inputPath = args.length > 0 ? args[0] : "data/twitch.csv";
